@@ -1,0 +1,12 @@
+<Project>
+	<PropertyGroup>
+		<!-- Example: C:\spt\EscapeFromTarkov\ -->
+		<SPTTarkovDirectory></SPTTarkovDirectory>
+
+		<!-- Copy the assembly to [SPTTarkovDirectory]\BepInEx\plugins\ after build -->
+		<CopyOutputToBepInEx>true</CopyOutputToBepInEx>
+
+		<!-- Package the assembly into a zip file located in bin directory -->
+		<PackageZip>true</PackageZip>
+	</PropertyGroup>
+</Project>
