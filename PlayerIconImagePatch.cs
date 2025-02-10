@@ -5,6 +5,7 @@ using SPT.Reflection.Patching;
 using EFT;
 using HarmonyLib;
 using PlayerIcons;
+using EFT.InventoryLogic;
 
 namespace Transmog
 {
@@ -20,7 +21,7 @@ namespace Transmog
 			return method;
 		}
 
-		public static EquipmentClass CloneAndModifyEquipmentClass(EquipmentClass originEquipmentClass)
+		public static InventoryEquipment CloneAndModifyEquipmentClass(InventoryEquipment originEquipmentClass)
 		{
 			return Plugin.CloneAndModifyEquipmentClass(originEquipmentClass, false);
 		}

@@ -14,7 +14,7 @@ using static Transmog.CustomInteractionsProvider;
 
 namespace Transmog
 {
-	[BepInPlugin("net.hakugyokurou.Transmog", "Transmog", "1.0.0")]
+	[BepInPlugin("net.hakugyokurou.Transmog", "Transmog", "1.1.0")]
 	[BepInDependency("com.IcyClawz.CustomInteractions")]
 	public class Plugin : BaseUnityPlugin
 	{
@@ -28,7 +28,7 @@ namespace Transmog
 		private void Awake()
 		{
 			logger = Logger;
-			logger.LogInfo("Loading: Transmog - V1.0.0");
+			logger.LogInfo("Loading: Transmog - V1.1.0");
 
 			ShowScavInMenu = Config.Bind("Generals", "Show Scav in transmog menu", false, "Allow you to apply transmog to your scavs.");
 			AffectIngameModel = Config.Bind("Generals", "Affect ingame player entity", true, 
@@ -110,10 +110,10 @@ namespace Transmog
 			return true;
 		}
 
-		public static EquipmentClass CloneAndModifyEquipmentClass(EquipmentClass originEquipmentClass, bool isScav = false)
+		public static InventoryEquipment CloneAndModifyEquipmentClass(InventoryEquipment originEquipmentClass, bool isScav = false)
 		{
-			// Equivalent to originEquipmentClass.CloneVisibleItemWithSameId()
-			var newEquipmentClass = GClass2771.smethod_1(originEquipmentClass, GClass2771.Class2113.Instance, true);
+			// originEquipmentClass.CloneVisibleItemWithSameId()
+			var newEquipmentClass = GClass3105.smethod_2<InventoryEquipment>(originEquipmentClass, GClass3105.Class2259.Instance, true, false);
 
 			var newEquipments = isScav ? ScavEquipments : PmcEquipments;
 			for (int i = 0; i < (int) SlotType.Count; i++)
@@ -138,6 +138,7 @@ namespace Transmog
 					newEquipments[i].AffectSlot(newEquipmentClass.GetSlot(slotIndex));
 				}
 			}
+
 			return newEquipmentClass;
 		}
 
@@ -228,7 +229,7 @@ namespace Transmog
 				_hide = false;
 				if (string.IsNullOrWhiteSpace(config))
 					return null;
-				var itemFactory = Singleton<ItemFactory>.Instance;
+				var itemFactory = Singleton<ItemFactoryClass>.Instance;
 				var solver = itemFactory.ItemTemplates;
 				var queue = new Queue<Item>();
 				var splittedConfig = config.Split(',');
@@ -257,7 +258,7 @@ namespace Transmog
 
 				void DeserializeDo(Item _rootItem, Queue<Item> _itemQueue)
 				{
-					if (_rootItem is LootItemClass loot)
+					if (_rootItem is CompoundItem loot)
 					{
 						var slots = loot.Slots;
 						foreach (var slot in slots)
@@ -295,7 +296,7 @@ namespace Transmog
 				sb.Append(item.TemplateId);
 				void SerializeDo(Item _item2, StringBuilder _sb)
 				{
-					if (_item2 is LootItemClass loot)
+					if (_item2 is CompoundItem loot)
 					{
 						var slots = loot.Slots;
 						foreach (var slot in slots)

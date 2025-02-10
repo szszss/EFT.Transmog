@@ -21,19 +21,10 @@ namespace Transmog
 
 		private class PlayerBodyPatch1 : ModulePatch
 		{
-			private static FieldInfo fieldSlots;
-
 			protected override MethodBase GetTargetMethod()
 			{
-				fieldSlots = AccessTools.Field(typeof(EquipmentClass), "slot_0");
-				if (fieldSlots == null)
-				{
-					Plugin.LogInfo("Unable to find EquipmentClass slot_0 field.");
-					return null;
-				}
-
 				var method = AccessTools.FirstMethod(typeof(PlayerBody), info => info.Name == "Init" && 
-					info.GetParameters().Length == 6);
+					info.GetParameters().Length == 8);
 				if (method != null)
 					Plugin.LogInfo("Found PlayerBody Init method.");
 				else
@@ -42,7 +33,7 @@ namespace Transmog
 			}
 
 			[PatchPrefix]
-			public static void Prefix(ref EquipmentClass __1, EPlayerSide __4, string __5)
+			public static void Prefix(ref InventoryEquipment __1, EPlayerSide __4, string __5)
 			{
 				// Fix game freezing on side selection
 				if (Plugin.GetPlayerPmcProfile() == null)
@@ -57,27 +48,17 @@ namespace Transmog
 					{
 						var isScav = __4 == EPlayerSide.Savage;
 						var costumes = isScav ? Plugin.ScavEquipments : Plugin.PmcEquipments;
-						var newEquipments = __1.CloneVisibleItem();					var slots = fieldSlots.GetValue(newEquipments) as Slot[];
-						if (slots == null)
-						{
-							Plugin.LogError($"Player's EquipmentClass is empty.");
-							return;
-						}
-						foreach (var slotName in EquipmentClass.AllVisualSlotNames)
-						{
+						var newEquipments = __1.CloneVisibleItem();
 
-							if (Plugin.ToSlotType(slotName, out var slotType) && costumes[(int)slotType].HasEffect())
+						foreach (var visualSlot in InventoryEquipment.AllVisualSlotNames)
+						{
+							if (Plugin.ToSlotType(visualSlot, out var slotType) && costumes[(int)slotType].HasEffect())
 							{
 								Plugin.LogDebug($"Apply transmog to {slotType.ToString()} slot.");
-								var slot = new Slot(slots[(int)slotName], newEquipments);
-								slots[(int)slotName] = slot;
-								costumes[(int)slotType].AffectSlot(slot);
-							}
-							else
-							{
-								slots[(int)slotName] = __1.GetSlot(slotName);
+								costumes[(int)slotType].AffectSlot(newEquipments.GetSlot(visualSlot));
 							}
 						}
+
 						__1 = newEquipments;
 					}
 				}
@@ -196,11 +177,12 @@ namespace Transmog
 			protected override MethodBase GetTargetMethod()
 			{
 				// was method_16 in SPT 3.8
-				var method = AccessTools.Method(typeof(HideoutPlayerOwner), "method_27", new [] { typeof(bool) });
+				// was method_27 in SPT 3.9
+				var method = AccessTools.Method(typeof(HideoutPlayerOwner), "method_33", new [] { typeof(bool) });
 				if (method != null)
-					Plugin.LogInfo("Found HideoutPlayerOwner method_27 method.");
+					Plugin.LogInfo("Found HideoutPlayerOwner method_33 method.");
 				else
-					Plugin.LogInfo("Unable to find HideoutPlayerOwner method_27 method.");
+					Plugin.LogInfo("Unable to find HideoutPlayerOwner method_33 method.");
 				return method;
 			}
 

@@ -6,7 +6,7 @@ using IcyClawz.CustomInteractions;
 
 namespace Transmog
 {
-	public class CustomInteractionsProvider : IItemCustomInteractionsProvider, ICustomInteractionsProvider
+	public class CustomInteractionsProvider : ICustomInteractionsProvider
 	{
 		internal static StaticIcons StaticIcons
 		{
@@ -51,11 +51,98 @@ namespace Transmog
 
 			if (available.Any(b => b == true))
 			{
-				CustomInteraction customInteraction = new CustomInteraction();
+				CustomInteraction customInteraction = new CustomInteraction(uiContext);
 				customInteraction.Caption = () => "Transmog";
 				customInteraction.Icon = () => StaticIcons.GetAttributeIcon(EItemAttributeId.ArmorType);
-				customInteraction.SubMenu = () => new SubMenu(uiContext, item, available);
+				customInteraction.SubMenu = () => CreateSubMenu(uiContext, item, available);
 				yield return customInteraction;
+			}
+		}
+
+		private IEnumerable<CustomInteraction> CreateSubMenu(ItemUiContext uiContext, Item item, bool[] available)
+		{
+			for (var i = 0; i < available.Length; i++)
+			{
+				if (available[i])
+				{
+					var i1 = i;
+					var showScav = Plugin.ShowScavInMenu.Value;
+					var name = ((SlotType)i).ToString();
+					var pmcCallname = showScav ? "PMC " : "";
+
+					yield return new CustomInteraction(uiContext)
+					{
+						Caption = () => $"Set as {pmcCallname}{name}",
+						Action = () =>
+						{
+							NotificationManagerClass.DisplayMessageNotification(
+								$"Set {item.LocalizedShortName()} as Your PMC's visual {name.ToLowerInvariant()}.");
+							Plugin.PmcEquipments[i1].Set(item);
+						}
+					};
+					if (showScav)
+					{
+						yield return new CustomInteraction(uiContext)
+						{
+							Caption = () => $"Set as Scav {name}",
+							Action = () =>
+							{
+								NotificationManagerClass.DisplayMessageNotification(
+									$"Set {item.LocalizedShortName()} as Your Scav's visual {name.ToLowerInvariant()}.");
+								Plugin.ScavEquipments[i1].Set(item);
+							}
+						};
+					}
+					yield return new CustomInteraction(uiContext)
+					{
+						Caption = () => $"Hide {pmcCallname}{name}",
+						Action = () =>
+						{
+							NotificationManagerClass.DisplayMessageNotification(
+								$"Your PMC's {name.ToLowerInvariant()} will be visually hidden.");
+							Plugin.PmcEquipments[i1].Hide();
+						}
+					};
+					if (showScav)
+					{
+						yield return new CustomInteraction(uiContext)
+						{
+							Caption = () => $"Reset {pmcCallname}{name}",
+							Action = () =>
+							{
+								NotificationManagerClass.DisplayMessageNotification(
+									$"Your PMC's {name.ToLowerInvariant()} will be shown normally.");
+								Plugin.PmcEquipments[i1].Reset();
+							}
+						};
+					}
+					if (Plugin.PmcEquipments[i1].HasEffect())
+					{
+						yield return new CustomInteraction(uiContext)
+						{
+							Caption = () => $"Reset {pmcCallname}{name}",
+							Action = () =>
+							{
+								NotificationManagerClass.DisplayMessageNotification(
+									$"Your PMC's {name.ToLowerInvariant()} will be shown normally.");
+								Plugin.PmcEquipments[i1].Reset();
+							}
+						};
+					}
+					if (showScav && Plugin.ScavEquipments[i1].HasEffect())
+					{
+						yield return new CustomInteraction(uiContext)
+						{
+							Caption = () => $"Reset Scav {name}",
+							Action = () =>
+							{
+								NotificationManagerClass.DisplayMessageNotification(
+									$"Your Scav's {name.ToLowerInvariant()} will be shown normally.");
+								Plugin.ScavEquipments[i1].Reset();
+							}
+						};
+					}
+				}
 			}
 		}
 
@@ -66,95 +153,6 @@ namespace Transmog
 			if (template.Parent != null)
 				return CheckTemplateParent(template.Parent, id);
 			return false;
-		}
-
-		private class SubMenu : CustomSubInteractions
-		{
-			public SubMenu(ItemUiContext uiContext, Item item, bool[] available) : base(uiContext)
-			{
-				for (var i = 0; i < available.Length; i++)
-				{
-					if (available[i])
-					{
-						var i1 = i;
-						var showScav = Plugin.ShowScavInMenu.Value;
-						var name = ((SlotType)i).ToString();
-						var pmcCallname = showScav ? "PMC " : "";
-						Add(new CustomInteraction()
-						{
-							Caption = () => $"Set as {pmcCallname}{name}",
-							Action = () =>
-							{
-								NotificationManagerClass.DisplayMessageNotification(
-									$"Set {item.LocalizedShortName()} as Your PMC's visual {name.ToLowerInvariant()}.");
-								Plugin.PmcEquipments[i1].Set(item);
-							}
-						});
-						if (showScav)
-						{
-							Add(new CustomInteraction()
-							{
-								Caption = () => $"Set as Scav {name}",
-								Action = () =>
-								{
-									NotificationManagerClass.DisplayMessageNotification(
-										$"Set {item.LocalizedShortName()} as Your Scav's visual {name.ToLowerInvariant()}.");
-									Plugin.ScavEquipments[i1].Set(item);
-								}
-							});
-						}
-						Add(new CustomInteraction()
-						{
-							Caption = () => $"Hide {pmcCallname}{name}",
-							Action = () =>
-							{
-								NotificationManagerClass.DisplayMessageNotification(
-									$"Your PMC's {name.ToLowerInvariant()} will be visually hidden.");
-								Plugin.PmcEquipments[i1].Hide();
-							}
-						});
-						if (showScav)
-						{
-							Add(new CustomInteraction()
-							{
-								Caption = () => $"Hide Scav {name}",
-								Action = () =>
-								{
-									NotificationManagerClass.DisplayMessageNotification(
-										$"Your Scav's {name.ToLowerInvariant()} will be visually hidden.");
-									Plugin.ScavEquipments[i1].Hide();
-								}
-							});
-						}
-						if (Plugin.PmcEquipments[i1].HasEffect())
-						{
-							Add(new CustomInteraction()
-							{
-								Caption = () => $"Reset {pmcCallname}{name}",
-								Action = () =>
-								{
-									NotificationManagerClass.DisplayMessageNotification(
-										$"Your PMC's {name.ToLowerInvariant()} will be shown normally.");
-									Plugin.PmcEquipments[i1].Reset();
-								}
-							});
-						}
-						if (showScav && Plugin.ScavEquipments[i1].HasEffect())
-						{
-							Add(new CustomInteraction()
-							{
-								Caption = () => $"Reset Scav {name}",
-								Action = () =>
-								{
-									NotificationManagerClass.DisplayMessageNotification(
-										$"Your Scav's {name.ToLowerInvariant()} will be shown normally.");
-									Plugin.ScavEquipments[i1].Reset();
-								}
-							});
-						}
-					}
-				}
-			}
 		}
 	}
 }

@@ -45,32 +45,7 @@ namespace Transmog
 
 		public static void MarkProfile(Profile profile)
 		{
-			var oldInfo = profile.Info;
-			profile.Info = new InfoClass()
-			{
-				Nickname = MAGIC_ID_SKIP_TRANSMOG,
-				MainProfileNickname = MAGIC_ID_SKIP_TRANSMOG,
-				Side = oldInfo.Side,
-				MemberCategory = oldInfo.MemberCategory,
-				Experience = oldInfo.Experience
-			};
-		}
-
-		/// <summary>
-		/// We use a special inherited class of GClass1767 to mark out which rendering request is from TacticalClothingView.
-		///
-		/// Note: Its name was GClass1755 in SPT 3.8
-		/// </summary>
-		public class MarkedCustomization : GClass1767
-		{
-			public MarkedCustomization()
-			{
-			}
-
-			public MarkedCustomization(Dictionary<EBodyModelPart, string> original)
-				: base(original)
-			{
-			}
+			profile.Info.Nickname = MAGIC_ID_SKIP_TRANSMOG;
 		}
 	}
 }
