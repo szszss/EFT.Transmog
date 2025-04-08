@@ -38,7 +38,7 @@
     <Reference Include="$(SPTTarkovDirectory)\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll" />
     <Reference Include="$(SPTTarkovDirectory)\BepInEx\core\0Harmony.dll" />
     <Reference Include="$(SPTTarkovDirectory)\BepInEx\core\BepInEx.dll" />
-	<Reference Include="$(SPTTarkovDirectory)\BepInEx\plugins\spt\spt-common.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\BepInEx\plugins\spt\spt-common.dll" />
     <Reference Include="$(SPTTarkovDirectory)\BepInEx\plugins\spt\spt-reflection.dll" />
     <Reference Include="$(SPTTarkovDirectory)\BepInEx\plugins\IcyClawz.CustomInteractions.dll" />
   </ItemGroup>
@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomInteractionsProvider.cs" />
+    <Compile Include="MatchMakerSideSelectionScreenPatch.cs" />
     <Compile Include="PlayerBodyPatch.cs" />
     <Compile Include="PlayerModelViewPatch.cs" />
     <Compile Include="PlayerIconImagePatch.cs" />
@@ -70,12 +71,9 @@
       <TempDir>$(OutputPath)TempZipDir\</TempDir>
       <TargetDirInZip>BepInEx\plugins\</TargetDirInZip>
     </PropertyGroup>
-
     <MakeDir Directories="$(TempDir)$(TargetDirInZip)" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TempDir)$(TargetDirInZip)" />
-
     <ZipDirectory SourceDirectory="$(TempDir)" DestinationFile="$(OutputZipPath)" Overwrite="true" />
-
     <RemoveDir Directories="$(TempDir)" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

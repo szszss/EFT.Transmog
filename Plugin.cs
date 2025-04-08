@@ -21,6 +21,7 @@ namespace Transmog
 		private static ManualLogSource logger;
 
 		public static ConfigEntry<bool> ShowScavInMenu;
+		public static ConfigEntry<bool> DisableScavTransmogInLobby;
 		public static ConfigEntry<bool> AffectIngameModel;
 		public static CostumeItem[] PmcEquipments = new CostumeItem[(int) SlotType.Count];
 		public static CostumeItem[] ScavEquipments = new CostumeItem[(int) SlotType.Count];
@@ -31,6 +32,8 @@ namespace Transmog
 			logger.LogInfo("Loading: Transmog - V1.1.0");
 
 			ShowScavInMenu = Config.Bind("Generals", "Show Scav in transmog menu", false, "Allow you to apply transmog to your scavs.");
+			DisableScavTransmogInLobby = Config.Bind("Generals", "Show original equipment for Scav in the lobby", false, 
+				"Disable transmog for Scavs in the matchmaking screen so you can see their equipment.");
 			AffectIngameModel = Config.Bind("Generals", "Affect ingame player entity", true, 
 				"When enabled, your player models in raid (such as shadow, third person model when you have Freecam mod) will also be affected by Transmog. " +
 				"If disabled, only the player models in the tab menu and main menu will be affected. " +
@@ -58,6 +61,7 @@ namespace Transmog
 			new PlayerIconImagePatch().Enable();
 			new TacticalClothingViewPatch().Enable();
 			new PlayerBodyPatch().Enable();
+			new MatchMakerSideSelectionScreenPatch().Enable();
 			CustomInteractionsManager.Register(new CustomInteractionsProvider());
 		}
 
