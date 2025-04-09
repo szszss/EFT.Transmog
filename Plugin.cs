@@ -14,7 +14,7 @@ using static Transmog.CustomInteractionsProvider;
 
 namespace Transmog
 {
-	[BepInPlugin("net.hakugyokurou.Transmog", "Transmog", "1.1.1")]
+	[BepInPlugin("net.hakugyokurou.Transmog", "Transmog", "1.2.0")]
 	[BepInDependency("com.IcyClawz.CustomInteractions")]
 	public class Plugin : BaseUnityPlugin
 	{
@@ -29,7 +29,7 @@ namespace Transmog
 		private void Awake()
 		{
 			logger = Logger;
-			logger.LogInfo("Loading: Transmog - V1.1.1");
+			logger.LogInfo("Loading: Transmog - V1.2.0");
 
 			ShowScavInMenu = Config.Bind("Generals", "Show Scav in transmog menu", false, "Allow you to apply transmog to your scavs.");
 			DisableScavTransmogInLobby = Config.Bind("Generals", "Show original equipment for Scav in the lobby", false, 
@@ -117,7 +117,7 @@ namespace Transmog
 		public static InventoryEquipment CloneAndModifyEquipmentClass(InventoryEquipment originEquipmentClass, bool isScav = false)
 		{
 			// originEquipmentClass.CloneVisibleItemWithSameId()
-			var newEquipmentClass = GClass3105.smethod_2<InventoryEquipment>(originEquipmentClass, GClass3105.Class2259.Instance, true, false);
+			var newEquipmentClass = GClass3176.smethod_2<InventoryEquipment>(originEquipmentClass, GClass3176.Class2307.Instance, true, false);
 
 			var newEquipments = isScav ? ScavEquipments : PmcEquipments;
 			for (int i = 0; i < (int) SlotType.Count; i++)
