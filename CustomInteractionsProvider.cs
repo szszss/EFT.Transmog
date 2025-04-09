@@ -107,12 +107,12 @@ namespace Transmog
 					{
 						yield return new CustomInteraction(uiContext)
 						{
-							Caption = () => $"Reset {pmcCallname}{name}",
+							Caption = () => $"Hide Scav {name}",
 							Action = () =>
 							{
 								NotificationManagerClass.DisplayMessageNotification(
-									$"Your PMC's {name.ToLowerInvariant()} will be shown normally.");
-								Plugin.PmcEquipments[i1].Reset();
+									$"Your Scav's {name.ToLowerInvariant()} will be visually hidden.");
+								Plugin.ScavEquipments[i1].Hide();
 							}
 						};
 					}
