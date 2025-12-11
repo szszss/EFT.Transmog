@@ -17,7 +17,7 @@ namespace Transmog
 			if (method != null)
 				Plugin.LogInfo("Found PlayerIconImage SetPresetIcon method.");
 			else
-				Plugin.LogInfo("Unable to find PlayerIconImage SetPresetIcon method.");
+				Plugin.LogError("Unable to find PlayerIconImage SetPresetIcon method.");
 			return method;
 		}
 

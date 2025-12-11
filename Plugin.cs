@@ -117,7 +117,7 @@ namespace Transmog
 		public static InventoryEquipment CloneAndModifyEquipmentClass(InventoryEquipment originEquipmentClass, bool isScav = false)
 		{
 			// originEquipmentClass.CloneVisibleItemWithSameId()
-			var newEquipmentClass = GClass3176.smethod_2<InventoryEquipment>(originEquipmentClass, GClass3176.Class2307.Instance, true, false);
+			var newEquipmentClass = GClass3380.smethod_2<InventoryEquipment>(originEquipmentClass, GClass3380.Class2421.Instance, true, false);
 
 			var newEquipments = isScav ? ScavEquipments : PmcEquipments;
 			for (int i = 0; i < (int) SlotType.Count; i++)
@@ -138,7 +138,7 @@ namespace Transmog
 						default:
 							throw new ArgumentOutOfRangeException();
 					}
-					LogDebug($"Apply transmog to {slotIndex.ToString()} slot.");
+					LogDebug($"Apply transmog to {slotIndex} slot.");
 					newEquipments[i].AffectSlot(newEquipmentClass.GetSlot(slotIndex));
 				}
 			}
