@@ -28,7 +28,7 @@ namespace Transmog
 				if (method != null)
 					Plugin.LogInfo("Found PlayerBody Init method.");
 				else
-					Plugin.LogInfo("Unable to find PlayerBody Init method.");
+					Plugin.LogError("Unable to find PlayerBody Init method.");
 				return method;
 			}
 
@@ -54,7 +54,7 @@ namespace Transmog
 						{
 							if (Plugin.ToSlotType(visualSlot, out var slotType) && costumes[(int)slotType].HasEffect())
 							{
-								Plugin.LogDebug($"Apply transmog to {slotType.ToString()} slot.");
+								Plugin.LogDebug($"Apply transmog to {slotType} slot.");
 								costumes[(int)slotType].AffectSlot(newEquipments.GetSlot(visualSlot));
 							}
 						}
@@ -78,7 +78,7 @@ namespace Transmog
 				var method = AccessTools.Method(typeof(Player), "Init");
 				if (method == null)
 				{
-					Plugin.LogInfo("Unable to find Player Init method.");
+					Plugin.LogError("Unable to find Player Init method.");
 					return null;
 				}
 				var asyncStateMachineAttribute = method.GetCustomAttribute<AsyncStateMachineAttribute>();
@@ -125,7 +125,7 @@ namespace Transmog
 				if (method != null)
 					Plugin.LogInfo("Found Profile GetAllPrefabPaths method.");
 				else
-					Plugin.LogInfo("Unable to find Profile GetAllPrefabPaths method.");
+					Plugin.LogError("Unable to find Profile GetAllPrefabPaths method.");
 				return method;
 			}
 
@@ -178,11 +178,11 @@ namespace Transmog
 			{
 				// was method_16 in SPT 3.8
 				// was method_27 in SPT 3.9
-				var method = AccessTools.Method(typeof(HideoutPlayerOwner), "method_33", new [] { typeof(bool) });
+				var method = AccessTools.Method(typeof(HideoutPlayerOwner), "method_34", new [] { typeof(bool) });
 				if (method != null)
-					Plugin.LogInfo("Found HideoutPlayerOwner method_33 method.");
+					Plugin.LogInfo("Found HideoutPlayerOwner method_34 method.");
 				else
-					Plugin.LogInfo("Unable to find HideoutPlayerOwner method_33 method.");
+					Plugin.LogError("Unable to find HideoutPlayerOwner method_34 method.");
 				return method;
 			}
 

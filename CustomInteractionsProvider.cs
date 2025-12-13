@@ -51,11 +51,13 @@ namespace Transmog
 
 			if (available.Any(b => b == true))
 			{
-				CustomInteraction customInteraction = new CustomInteraction(uiContext);
-				customInteraction.Caption = () => "Transmog";
-				customInteraction.Icon = () => StaticIcons.GetAttributeIcon(EItemAttributeId.ArmorType);
-				customInteraction.SubMenu = () => CreateSubMenu(uiContext, item, available);
-				yield return customInteraction;
+                CustomInteraction customInteraction = new CustomInteraction(uiContext)
+                {
+                    Caption = () => "Transmog",
+                    Icon = () => StaticIcons.GetAttributeIcon(EItemAttributeId.ArmorType),
+                    SubMenu = () => CreateSubMenu(uiContext, item, available)
+                };
+                yield return customInteraction;
 			}
 		}
 

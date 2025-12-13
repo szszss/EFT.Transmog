@@ -22,7 +22,7 @@ namespace Transmog
 			if (method != null)
 				Plugin.LogInfo("Found MatchMakerSideSelectionScreen Show method.");
 			else
-				Plugin.LogInfo("Unable to find MatchMakerSideSelectionScreen Show method.");
+				Plugin.LogError("Unable to find MatchMakerSideSelectionScreen Show method.");
 			return method;
 		}
 

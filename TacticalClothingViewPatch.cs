@@ -22,7 +22,7 @@ namespace Transmog
 			if (method != null)
 				Plugin.LogInfo("Found TacticalClothingView Show method.");
 			else
-				Plugin.LogInfo("Unable to find TacticalClothingView Show method.");
+				Plugin.LogError("Unable to find TacticalClothingView Show method.");
 			return method;
 		}
 
