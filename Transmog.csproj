@@ -31,29 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <Import Project="UserSettings.props" Condition="exists('UserSettings.props')" />
-  <ItemGroup Condition="'$(SPTTarkovDirectory)'!=''" />
+  <ItemGroup Condition="'$(SPTTarkovDirectory)'!=''">
+    <Reference Include="$(SPTTarkovDirectory)\EscapeFromTarkov_Data\Managed\UnityEngine.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\EscapeFromTarkov_Data\Managed\Comfort.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\BepInEx\core\0Harmony.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\BepInEx\core\BepInEx.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\BepInEx\plugins\spt\spt-common.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\BepInEx\plugins\spt\spt-reflection.dll" />
+    <Reference Include="$(SPTTarkovDirectory)\BepInEx\plugins\IcyClawz.CustomInteractions.dll" />
+  </ItemGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>D:\Games\EFT\EFT4.0\BepInEx\core\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>D:\Games\EFT\EFT4.0\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>D:\Games\EFT\EFT4.0\BepInEx\core\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="Comfort">
-      <HintPath>D:\Games\EFT\EFT4.0\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
-    </Reference>
-    <Reference Include="IcyClawz.CustomInteractions">
-      <HintPath>D:\Games\EFT\EFT4.0\BepInEx\plugins\IcyClawz.CustomInteractions.dll</HintPath>
-    </Reference>
-    <Reference Include="spt-common">
-      <HintPath>D:\Games\EFT\EFT4.0\BepInEx\plugins\spt\spt-common.dll</HintPath>
-    </Reference>
-    <Reference Include="spt-reflection">
-      <HintPath>D:\Games\EFT\EFT4.0\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,12 +51,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>D:\Games\EFT\EFT4.0\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>D:\Games\EFT\EFT4.0\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomInteractionsProvider.cs" />

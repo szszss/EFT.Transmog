@@ -399,5 +399,3 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /UserSettings.props
-/Transmog.csproj
-/Transmog.csproj
