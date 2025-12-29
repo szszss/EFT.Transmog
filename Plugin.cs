@@ -14,7 +14,7 @@ using static Transmog.CustomInteractionsProvider;
 
 namespace Transmog
 {
-	[BepInPlugin("net.hakugyokurou.Transmog", "Transmog", "1.3.0")]
+	[BepInPlugin("net.hakugyokurou.Transmog", "Transmog", "1.3.1")]
 	[BepInDependency("com.IcyClawz.CustomInteractions")]
 	public class Plugin : BaseUnityPlugin
 	{
@@ -33,7 +33,7 @@ namespace Transmog
 		private void Awake()
 		{
 			logger = Logger;
-			logger.LogInfo("Loading: Transmog - V1.3.0");
+			logger.LogInfo("Loading: Transmog - V1.3.1");
 
 			ShowScavInMenu = Config.Bind("Generals", "Show Scav in transmog menu", false, "Allow you to apply transmog to your scavs.");
 			DisableScavTransmogInLobby = Config.Bind("Generals", "Show original equipment for Scav in the lobby", false, 
