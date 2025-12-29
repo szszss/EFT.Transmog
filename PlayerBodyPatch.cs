@@ -33,7 +33,7 @@ namespace Transmog
 			}
 
 			[PatchPrefix]
-			public static void Prefix(ref InventoryEquipment __1, EPlayerSide __4, string __5)
+			public static void Prefix(ref InventoryEquipment __1, string __5)
 			{
 				// Fix game freezing on side selection
 				if (Plugin.GetPlayerPmcProfile() == null)
@@ -41,13 +41,14 @@ namespace Transmog
 					Plugin.LogDebug("Skip side selection view");
 					return;
 				}
-				if (Plugin.GetPlayerPmcProfile().Id == __5 || Plugin.GetPlayerScavProfile().Id == __5)
+
+				Plugin.GetPlayerScavProfile();
+
+				if (Plugin.costumes.TryGetValue(__5, out Plugin.CostumeItem[] costumes))
 				{
 					Plugin.LogDebug($"Found local player's PlayerBody.");
-					if (Plugin.AffectIngameModel.Value)
+					if (Plugin.AffectIngameModel.Value || (__5 != Plugin.PmcId && __5 != Plugin.ScavId))
 					{
-						var isScav = __4 == EPlayerSide.Savage;
-						var costumes = isScav ? Plugin.ScavEquipments : Plugin.PmcEquipments;
 						var newEquipments = __1.CloneVisibleItem();
 
 						foreach (var visualSlot in InventoryEquipment.AllVisualSlotNames)
@@ -136,33 +137,17 @@ namespace Transmog
 				{
 					yield return key;
 				}
-				if (__instance.Nickname == Plugin.GetPlayerPmcProfile().Nickname)
+
+				if (!Plugin.costumes.TryGetValue(__instance.Id, out Plugin.CostumeItem[] costumes)) yield break;
+				Plugin.LogDebug($"Append transmog resources to {__instance.GetCorrectedNickname()}.");
+				foreach (var equipment in costumes)
 				{
-					Plugin.LogDebug("Append transmog resources to PMC.");
-					foreach (var equipment in Plugin.PmcEquipments)
+					var item = equipment.Get();
+					if (item != null)
 					{
-						var item = equipment.Get();
-						if (item != null)
+						foreach (var key in item.Template.AllResources)
 						{
-							foreach (var key in item.Template.AllResources)
-							{
-								yield return key;
-							}
-						}
-					}
-				}
-				else if (__instance.Nickname == Plugin.GetPlayerScavProfile().Nickname)
-				{
-					Plugin.LogDebug("Append transmog resources to Scav.");
-					foreach (var equipment in Plugin.ScavEquipments)
-					{
-						var item = equipment.Get();
-						if (item != null)
-						{
-							foreach (var key in item.Template.AllResources)
-							{
-								yield return key;
-							}
+							yield return key;
 						}
 					}
 				}

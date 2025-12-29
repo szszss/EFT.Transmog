@@ -26,6 +26,10 @@ namespace Transmog
 		public static CostumeItem[] PmcEquipments = new CostumeItem[(int) SlotType.Count];
 		public static CostumeItem[] ScavEquipments = new CostumeItem[(int) SlotType.Count];
 
+		public static string PmcId { get; private set; } = "";
+		public static string ScavId { get; private set; } = "";
+		public static readonly Dictionary<string, CostumeItem[]> costumes = new Dictionary<string, CostumeItem[]>();
+
 		private void Awake()
 		{
 			logger = Logger;
@@ -39,23 +43,23 @@ namespace Transmog
 				"If disabled, only the player models in the tab menu and main menu will be affected. " +
 				"If you toggle this option in a raid, it will not take effect until the next raid.");
 
-			PmcEquipments[(int)SlotType.Armor] = new CostumeItem(Config.Bind("PMC Transmog", "Armor", ""));
-			PmcEquipments[(int)SlotType.Vest] = new CostumeItem(Config.Bind("PMC Transmog", "Vesc", ""));
-			PmcEquipments[(int)SlotType.Backpack] = new CostumeItem(Config.Bind("PMC Transmog", "Backpack", ""));
-			PmcEquipments[(int)SlotType.Eyewear] = new CostumeItem(Config.Bind("PMC Transmog", "Eyewear", ""));
-			PmcEquipments[(int)SlotType.FaceCover] = new CostumeItem(Config.Bind("PMC Transmog", "FaceCover", ""));
-			PmcEquipments[(int)SlotType.Headwear] = new CostumeItem(Config.Bind("PMC Transmog", "Headwear", ""));
-			PmcEquipments[(int)SlotType.Earpiece] = new CostumeItem(Config.Bind("PMC Transmog", "Earpiece", ""));
-			PmcEquipments[(int)SlotType.ArmBand] = new CostumeItem(Config.Bind("PMC Transmog", "ArmBand", ""));
+			PmcEquipments[(int)SlotType.Armor] = new CostumeItemLocal(Config.Bind("PMC Transmog", "Armor", ""));
+			PmcEquipments[(int)SlotType.Vest] = new CostumeItemLocal(Config.Bind("PMC Transmog", "Vesc", ""));
+			PmcEquipments[(int)SlotType.Backpack] = new CostumeItemLocal(Config.Bind("PMC Transmog", "Backpack", ""));
+			PmcEquipments[(int)SlotType.Eyewear] = new CostumeItemLocal(Config.Bind("PMC Transmog", "Eyewear", ""));
+			PmcEquipments[(int)SlotType.FaceCover] = new CostumeItemLocal(Config.Bind("PMC Transmog", "FaceCover", ""));
+			PmcEquipments[(int)SlotType.Headwear] = new CostumeItemLocal(Config.Bind("PMC Transmog", "Headwear", ""));
+			PmcEquipments[(int)SlotType.Earpiece] = new CostumeItemLocal(Config.Bind("PMC Transmog", "Earpiece", ""));
+			PmcEquipments[(int)SlotType.ArmBand] = new CostumeItemLocal(Config.Bind("PMC Transmog", "ArmBand", ""));
 
-			ScavEquipments[(int)SlotType.Armor] = new CostumeItem(Config.Bind("Scav Transmog", "Armor", ""));
-			ScavEquipments[(int)SlotType.Vest] = new CostumeItem(Config.Bind("Scav Transmog", "Vesc", ""));
-			ScavEquipments[(int)SlotType.Backpack] = new CostumeItem(Config.Bind("Scav Transmog", "Backpack", ""));
-			ScavEquipments[(int)SlotType.Eyewear] = new CostumeItem(Config.Bind("Scav Transmog", "Eyewear", ""));
-			ScavEquipments[(int)SlotType.FaceCover] = new CostumeItem(Config.Bind("Scav Transmog", "FaceCover", ""));
-			ScavEquipments[(int)SlotType.Headwear] = new CostumeItem(Config.Bind("Scav Transmog", "Headwear", ""));
-			ScavEquipments[(int)SlotType.Earpiece] = new CostumeItem(Config.Bind("Scav Transmog", "Earpiece", ""));
-			ScavEquipments[(int)SlotType.ArmBand] = new CostumeItem(Config.Bind("Scav Transmog", "ArmBand", ""));
+			ScavEquipments[(int)SlotType.Armor] = new CostumeItemLocal(Config.Bind("Scav Transmog", "Armor", ""));
+			ScavEquipments[(int)SlotType.Vest] = new CostumeItemLocal(Config.Bind("Scav Transmog", "Vesc", ""));
+			ScavEquipments[(int)SlotType.Backpack] = new CostumeItemLocal(Config.Bind("Scav Transmog", "Backpack", ""));
+			ScavEquipments[(int)SlotType.Eyewear] = new CostumeItemLocal(Config.Bind("Scav Transmog", "Eyewear", ""));
+			ScavEquipments[(int)SlotType.FaceCover] = new CostumeItemLocal(Config.Bind("Scav Transmog", "FaceCover", ""));
+			ScavEquipments[(int)SlotType.Headwear] = new CostumeItemLocal(Config.Bind("Scav Transmog", "Headwear", ""));
+			ScavEquipments[(int)SlotType.Earpiece] = new CostumeItemLocal(Config.Bind("Scav Transmog", "Earpiece", ""));
+			ScavEquipments[(int)SlotType.ArmBand] = new CostumeItemLocal(Config.Bind("Scav Transmog", "ArmBand", ""));
 
 			new PlayerModelViewPatch().Enable();
 			new PlayerIconImagePatch().Enable();
@@ -87,12 +91,25 @@ namespace Transmog
 
 		public static Profile GetPlayerPmcProfile()
 		{
-			return ClientAppUtils.GetMainApp().GetClientBackEndSession().Profile;
+			Profile profile = ClientAppUtils.GetMainApp().GetClientBackEndSession().Profile;
+			if (profile == null) return null; // It returns null while selecting side
+			if (profile.Id == PmcId) return profile;
+			costumes.Remove(PmcId);
+			PmcId = profile.Id;
+			costumes.Add(PmcId, PmcEquipments);
+
+			return profile;
 		}
 
 		public static Profile GetPlayerScavProfile()
 		{
-			return ClientAppUtils.GetMainApp().GetClientBackEndSession().ProfileOfPet;
+			Profile profile = ClientAppUtils.GetMainApp().GetClientBackEndSession().ProfileOfPet;
+			if (profile.Id == ScavId) return profile;
+			costumes.Remove(ScavId);
+			ScavId = profile.Id;
+			costumes.Add(ScavId, ScavEquipments);
+
+			return profile;
 		}
 
 		public static bool ToSlotType(EquipmentSlot equipmentSlot, out SlotType slotType)
@@ -146,31 +163,22 @@ namespace Transmog
 			return newEquipmentClass;
 		}
 
-		public class CostumeItem
+		public abstract class CostumeItem
 		{
-			private bool _ready = false;
-			private bool _hide = false;
-			private Item _item;
-			private readonly ConfigEntry<string> _configEntry;
+			protected bool _ready = false;
+			protected bool _hide = false;
+			protected Item _item;
 
-			public CostumeItem(ConfigEntry<string> configEntry)
-			{
-				_configEntry = configEntry;
-				_configEntry.SettingChanged += ConfigEntryOnSettingChanged;
-			}
+			public abstract string Value { get; set; }
 
-			private void ConfigEntryOnSettingChanged(object sender, EventArgs e)
-			{
-				_item = Deserialize(_configEntry.Value);
-				_ready = true;
-			}
+			public event Action<CostumeItem, string, string> ValueChanged;
 
 			public Item Get()
 			{
 				if (!_ready)
 				{
 					_ready = true;
-					_item = Deserialize(_configEntry.Value);
+					_item = Deserialize(Value);
 				}
 				return _item;
 			}
@@ -179,8 +187,8 @@ namespace Transmog
 			{
 				_hide = false;
 				_ready = true;
-				_configEntry.Value = Serialize(item);
-				_item = Deserialize(_configEntry.Value);
+				Value = Serialize(item);
+				_item = Deserialize(Value);
 			}
 
 			public void Hide()
@@ -188,7 +196,7 @@ namespace Transmog
 				_hide = true;
 				_item = null;
 				_ready = true;
-				_configEntry.Value = "hide";
+				Value = "hide";
 			}
 
 			public void Reset()
@@ -196,7 +204,7 @@ namespace Transmog
 				_hide = false;
 				_item = null;
 				_ready = true;
-				_configEntry.Value = string.Empty;
+				Value = string.Empty;
 			}
 
 			public bool IsHide()
@@ -204,7 +212,7 @@ namespace Transmog
 				if (!_ready)
 				{
 					_ready = true;
-					_item = Deserialize(_configEntry.Value);
+					_item = Deserialize(Value);
 				}
 				return _hide;
 			}
@@ -228,7 +236,7 @@ namespace Transmog
 				}
 			}
 
-			private Item Deserialize(string config)
+			public Item Deserialize(string config)
 			{
 				_hide = false;
 				if (string.IsNullOrWhiteSpace(config))
@@ -289,7 +297,7 @@ namespace Transmog
 				return item;
 			}
 
-			private string Serialize(Item item)
+			public string Serialize(Item item)
 			{
 				if (item == null)
 					return string.Empty;
@@ -327,6 +335,71 @@ namespace Transmog
 
 				SerializeDo(item, sb);
 				return sb.ToString();
+			}
+
+			protected void OnValueChanged(string oldValue, string newValue)
+			{
+				ValueChanged?.Invoke(this, oldValue, newValue);
+			}
+		}
+
+		public class CostumeItemLocal : CostumeItem
+		{
+			private readonly ConfigEntry<string> _configEntry;
+
+			private string lastValue;
+
+			public override string Value
+			{
+				get => _configEntry.Value;
+				set
+				{
+					if (value == _configEntry.Value) return;
+					_configEntry.Value = value;
+					OnValueChanged(lastValue, _configEntry.Value);
+					lastValue = value;
+				}
+			}
+
+			public CostumeItemLocal(ConfigEntry<string> configEntry)
+			{
+				_configEntry = configEntry;
+				lastValue = _configEntry.Value;
+				_configEntry.SettingChanged += ConfigEntryOnSettingChanged;
+			}
+
+			private void ConfigEntryOnSettingChanged(object sender, EventArgs e)
+			{
+				if (_configEntry.Value == lastValue) return;
+
+				_item = Deserialize(_configEntry.Value);
+				_ready = true;
+				OnValueChanged(lastValue, _configEntry.Value);
+				lastValue = _configEntry.Value;
+			}
+		}
+
+		public class CostumeItemRemote : CostumeItem
+		{
+			private string itemValue;
+			
+			public sealed override string Value
+			{
+				get => itemValue;
+				set
+				{
+					if (value == itemValue) return;
+					string oldValue = itemValue;
+					itemValue = value;
+					_item = Deserialize(itemValue);
+					_ready = true;
+					OnValueChanged(oldValue, itemValue);
+				}
+			}
+
+			public CostumeItemRemote(string value)
+			{
+				itemValue = value;
 			}
 		}
 	}

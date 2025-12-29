@@ -29,15 +29,15 @@ namespace Transmog
 			Count
 		}
 
-		private static readonly string[] BASE_TEMPLATE_ID = {
-			"5448e54d4bdc2dcc718b4568",
-			"5448e5284bdc2dcb718b4567",
-			"5448e53e4bdc2d60728b4567",
-			"5448e5724bdc2ddf718b4568",
-			"5a341c4686f77469e155819e",
-			"5a341c4086f77401f2541505",
-			"5645bcb74bdc2ded0b8b4578",
-			"5b3f15d486f77432d0509248",
+		private static readonly string[][] BASE_TEMPLATE_ID = {
+			new[] { "5448e54d4bdc2dcc718b4568" },
+			new[] { "5448e5284bdc2dcb718b4567" },
+			new[] { "5448e53e4bdc2d60728b4567" },
+			new[] { "5448e5724bdc2ddf718b4568" },
+			new[] { "5a341c4686f77469e155819e" },
+			new[] { "5a341c4086f77401f2541505" },
+			new[] { "5645bcb74bdc2ded0b8b4578" },
+			new[] { "5b3f15d486f77432d0509248", "6815465859b8c6ff13f94026" /*WTT - Pack 'n' Strap compatibility*/ }
 		};
 
 		public IEnumerable<CustomInteraction> GetCustomInteractions(ItemUiContext uiContext, EItemViewType viewType, Item item)
@@ -47,7 +47,7 @@ namespace Transmog
 				yield break;
 			}*/
 
-			var available = BASE_TEMPLATE_ID.Select(s => CheckTemplateParent(item.Template, s)).ToArray();
+			var available = BASE_TEMPLATE_ID.Select(s => s.Any(s2 => CheckTemplateParent(item.Template, s2))).ToArray();
 
 			if (available.Any(b => b == true))
 			{
