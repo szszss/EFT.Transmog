@@ -92,6 +92,7 @@ namespace Transmog
 		public static Profile GetPlayerPmcProfile()
 		{
 			Profile profile = ClientAppUtils.GetMainApp().GetClientBackEndSession().Profile;
+			if (profile == null) return null; // It returns null while selecting side
 			if (profile.Id == PmcId) return profile;
 			costumes.Remove(PmcId);
 			PmcId = profile.Id;
